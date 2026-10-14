@@ -19,6 +19,36 @@ loom {
 		client {
 			programArgs "--width", "1920", "--height", "1080"
 			vmArgs "--enable-native-access=ALL-UNNAMED"
+			// a failing mixin leaves its target's bytecode and the mixed classes in run/.mixin.out
+			vmArgs "-Dmixin.debug.export=true", "-Dmixin.dumpTargetOnFailure=true"
+		}
+	}
+}
+
+// src/gametest: server GameTests (runGameTest, part of `build` via `check`) and a client game test
+// (runClientGameTest, inherits the client run above). Never shipped: the gametest source set isn't in the jar.
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "passthrough-test"
+		enableGameTests = true
+		enableClientGameTests = true
+		eula = true // agrees to the Minecraft EULA for the test run directories
+	}
+}
+
+loom {
+	runs {
+		gameTest {
+			systemProperties.put("fabric-api.gametest.report-file", file("build/run/gameTest/junit.xml").absolutePath)
+		}
+		clientGameTest {
+			// the test makes its own world; without this the mod would open its "passthrough" world on the title screen
+			systemProperties.put("passthrough.noAutoWorld", "true")
+			if (providers.environmentVariable("CI").isPresent()) {
+				// Fabric's docs: client game tests on GitHub Actions can fail in the network synchronizer without this
+				systemProperties.put("fabric.client.gametest.disableNetworkSynchronizer", "true")
+			}
 		}
 	}
 }

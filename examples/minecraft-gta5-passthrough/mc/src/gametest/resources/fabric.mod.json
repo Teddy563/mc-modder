@@ -1,0 +1,21 @@
+{
+	"schemaVersion": 1,
+	"id": "passthrough-test",
+	"version": "1.0.0",
+	"name": "Passthrough tests",
+	"description": "Server GameTests and a client game test for the Passthrough bridge. Never shipped.",
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-gametest": [
+			"dev.rehan.passthrough.WorldBridgeGameTest"
+		],
+		"fabric-client-gametest": [
+			"dev.rehan.passthrough.client.PassthroughClientGameTest"
+		]
+	},
+	"depends": {
+		"passthrough": "*",
+		"fabric-api": "*"
+	}
+}

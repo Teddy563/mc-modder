@@ -1,7 +1,9 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "skills": {
-    "paths": ["skills"]
+    "paths": [
+      "skills"
+    ]
   },
   "mcp": {
     "fal": {
@@ -11,6 +13,14 @@
         "Authorization": "Bearer {env:FAL_KEY}"
       },
       "oauth": false
+    },
+    "minecraft-dev": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@mcdxai/minecraft-dev-mcp@1.3.0"
+      ]
     }
   }
 }

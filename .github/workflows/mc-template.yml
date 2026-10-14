@@ -1,0 +1,119 @@
+# The Minecraft 26.3 Fabric bridge mod of the GTA V passthrough example: build + server GameTests, then the client
+# game test (a real client joins a world, a scripted host talks to HostLink, screenshots are uploaded).
+#
+# Why these runners:
+# - Linux + Xvfb + Mesa llvmpipe (software OpenGL) is the setup Fabric documents for client game tests. There is no
+#   shared memory there (FrameExporter's mapping is Win32), so that job checks everything except the frame header.
+# - The frame header (Local\MCPassthroughFrame) only exists on Windows. GitHub's Windows runners have no GPU and only
+#   OpenGL 1.1, so that job installs Mesa's llvmpipe as the system OpenGL driver first. It is continue-on-error until
+#   it has been seen green: a Mesa or driver problem there shouldn't hide the Linux result.
+# - Not used: headlesshq/mc-runtime-test. It lists Fabric 26.1-26.3, but it joins its own world while this mod opens
+#   its "passthrough" world from the title screen; the client game test above already boots the mod in a client.
+name: mc-template
+on:
+  push:
+    paths:
+      - examples/minecraft-gta5-passthrough/mc/**
+      - .github/workflows/mc-template.yml
+  pull_request:
+    paths:
+      - examples/minecraft-gta5-passthrough/mc/**
+      - .github/workflows/mc-template.yml
+
+defaults:
+  run:
+    shell: bash
+    working-directory: examples/minecraft-gta5-passthrough/mc
+
+env:
+  MC: examples/minecraft-gta5-passthrough/mc
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew
+      # build -> check -> runGameTest: the server GameTests run on a GameTest server and fail the build
+      - run: ./gradlew build --stacktrace
+      - name: GameTest report
+        if: always()
+        run: |
+          f=build/run/gameTest/junit.xml
+          if [ -f "$f" ]; then
+            echo "tests: $(grep -o '<testcase' "$f" | wc -l), failures: $(grep -o '<failure' "$f" | wc -l)"
+          else
+            echo "no GameTest report"
+          fi
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mc-build
+          if-no-files-found: ignore
+          path: |
+            ${{ env.MC }}/build/libs/
+            ${{ env.MC }}/build/run/gameTest/junit.xml
+            ${{ env.MC }}/build/run/gameTest/logs/
+            ${{ env.MC }}/build/run/gameTest/crash-reports/
+            ${{ env.MC }}/build/reports/
+
+  client-gametest-linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew
+      - name: Xvfb and Mesa
+        run: |
+          sudo rm -f /var/lib/man-db/auto-update
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xvfb libgl1 libgl1-mesa-dri libegl1 libglx-mesa0
+      # --no-daemon: a fresh Gradle process started inside xvfb-run, so the game it forks gets DISPLAY
+      - run: xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew runClientGameTest --no-daemon --stacktrace
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mc-client-gametest-linux
+          if-no-files-found: ignore
+          path: |
+            ${{ env.MC }}/build/run/clientGameTest/screenshots/
+            ${{ env.MC }}/build/run/clientGameTest/logs/
+            ${{ env.MC }}/build/run/clientGameTest/crash-reports/
+            ${{ env.MC }}/build/run/clientGameTest/.mixin.out/
+
+  client-gametest-windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v4
+      # software OpenGL 4.x (llvmpipe) as the system driver: the runner's own is OpenGL 1.1
+      - uses: ssciwr/setup-mesa-dist-win@v2
+      # also asserts the shared-memory frame header (only on Windows)
+      - run: ./gradlew runClientGameTest --stacktrace
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mc-client-gametest-windows
+          if-no-files-found: ignore
+          path: |
+            ${{ env.MC }}/build/run/clientGameTest/screenshots/
+            ${{ env.MC }}/build/run/clientGameTest/logs/
+            ${{ env.MC }}/build/run/clientGameTest/crash-reports/
+            ${{ env.MC }}/build/run/clientGameTest/.mixin.out/

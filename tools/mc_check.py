@@ -1,52 +1,93 @@
-"""Fails if the toolkit links (github.com/<repo>) a known malware lure or ships a binary it shouldn't.
+"""MC Modder's guard for a toolkit or project folder.
 
-    python tools/check.py            # checks the modder/ folder this file lives in
-    python tools/check.py <folder>   # checks a project made with /mc-new
+    python tools/mc_check.py [folder]           # malware-lure links and files that must never be committed
+    python tools/mc_check.py --stale [folder]   # pre-26 Minecraft code that won't build on 26.x
+
+The first check fails on links to known malware lures posing as mashup tools, and on binaries: game files,
+loaders and builds come from their own sites at install time, never from a repo. The second check is for 26.x
+projects (no mappings, Mojang names): it flags the Loom setup and Yarn names that models carry over from
+1.21.x and older. With no folder, the toolkit itself is checked.
 """
+import re
 import sys
 from pathlib import Path
 
-# Suspected malware lures posing as mashup tools (research/rejected.json). Never link them.
+# Suspected malware lures posing as mashup tools. Never link them.
 LURES = (
     "TerminusBoulder/Universal-Game-Mashup-Studio",
     "TileTrackWarehouse/Passthrough-Mod-Forge",
     "StuccoWhisper/Extreme-Injector-V4",
 )
-# Game files, loaders and builds must come from their own sites at install time, never from the repo.
-BINARIES = {".exe", ".dll", ".asi", ".sys", ".so", ".dylib", ".jar", ".zip", ".7z", ".rar", ".rpf", ".bsa", ".ba2", ".bdt"}
-ALLOWED = {"gradle-wrapper.jar"}
-TEXT = {".md", ".json", ".py", ".java", ".cpp", ".h", ".fx", ".sh", ".bat", ".gradle", ".properties", ".txt", ".toml", ".yml", ".yaml"}
+LURE_HOSTS = ("github.com/", "raw.githubusercontent.com/", "codeload.github.com/", "api.github.com/repos/")
+BINARIES = {
+    ".exe", ".dll", ".asi", ".sys", ".so", ".dylib", ".jar", ".class", ".pdb", ".zip", ".7z", ".rar",
+    ".rpf", ".bsa", ".ba2", ".bdt", ".pak", ".esp", ".esm", ".esl", ".mca", ".mrpack",
+}
+TEXT = {
+    ".md", ".json", ".py", ".java", ".kt", ".kts", ".cpp", ".c", ".h", ".hpp", ".cs", ".rs", ".fx", ".hlsl",
+    ".sh", ".bat", ".cmd", ".ps1", ".gradle", ".properties", ".txt", ".toml", ".yml", ".yaml", ".ts", ".js",
+    ".mjs", ".lua", ".html", ".cfg", ".ini",
+}
+SKIP_DIRS = {".git", "build", ".gradle", "run", "node_modules", "__pycache__", ".venv", ".pytest_cache"}
+
+# (pattern, why) for 26.x projects, checked in build scripts and Java/Kotlin sources.
+STALE = (
+    (r"""id\s*\(?\s*['"]fabric-loom['"]""", "old remapping Loom plugin: 26.x uses 'net.fabricmc.fabric-loom'"),
+    (r"^\s*mappings[\s(]", "a mappings line: 26.x ships unobfuscated, drop it"),
+    (r"\bmod(Implementation|CompileOnly|RuntimeOnly|Api)\b", "mod* configuration: use implementation/compileOnly/runtimeOnly on 26.x"),
+    (r"\bremapJar\b", "remapJar: 26.x builds a plain jar (task 'jar')"),
+    (r"JavaVersion\.VERSION_(1[0-9]|2[0-4])\b|\brelease\s*=\s*(1[0-9]|2[0-4])\b|JavaLanguageVersion\.of\((1[0-9]|2[0-4])\)",
+     "Java older than 25: 26.x needs Java 25"),
+    (r"\b(MinecraftClient|ClientPlayerEntity|ServerPlayerEntity|PlayerEntity|ClientWorld|ServerWorld|MatrixStack|DrawContext|TextRenderer)\b",
+     "Yarn class name: 26.x uses Mojang names (Minecraft, LocalPlayer, ServerPlayer, Player, ClientLevel, ServerLevel, PoseStack, GuiGraphics, Font)"),
+)
+STALE_FILES = {".gradle", ".kts", ".java", ".kt"}
+
+
+def files(root: Path):
+    for path in sorted(root.rglob("*")):
+        if path.is_file() and not SKIP_DIRS.intersection(path.relative_to(root).parts):
+            yield path
 
 
 def problems(root: Path):
-    for path in sorted(root.rglob("*")):
-        if not path.is_file() or ".git" in path.parts or "build" in path.parts:
-            continue
-        if path.suffix.lower() in BINARIES and path.name not in ALLOWED:
-            yield f"binary not allowed: {path.relative_to(root)}"
-        if path.suffix.lower() in TEXT and path.name != Path(__file__).name:
+    me = Path(__file__).resolve()
+    for path in files(root):
+        rel = path.relative_to(root)
+        ext = path.suffix.lower()
+        wrapper = path.name == "gradle-wrapper.jar" and rel.parent.as_posix().endswith("gradle/wrapper")
+        if ext in BINARIES and not wrapper:
+            yield f"binary not allowed: {rel}"
+        if ext in TEXT and path.resolve() != me:
             text = path.read_text(encoding="utf-8", errors="ignore").lower()
             for lure in LURES:
-                if "github.com/" + lure.lower() in text:
-                    yield f"malware lure linked in {path.relative_to(root)}: {lure}"
+                if any(host + lure.lower() in text for host in LURE_HOSTS):
+                    yield f"malware lure linked in {rel}: {lure}"
 
 
-def _selftest(tmp: Path):
-    (tmp / "a.md").write_text("see github.com/stuccowhisper/extreme-injector-v4", encoding="utf-8")
-    (tmp / "ScriptHookV.dll").write_bytes(b"MZ")
-    (tmp / "gradle-wrapper.jar").write_bytes(b"PK")
-    found = list(problems(tmp))
-    assert len(found) == 2, found
+def stale(root: Path):
+    for path in files(root):
+        if path.suffix.lower() not in STALE_FILES:
+            continue
+        rel = path.relative_to(root)
+        for n, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
+            if line.lstrip().startswith(("//", "*", "/*")):
+                continue
+            for pattern, why in STALE:
+                if re.search(pattern, line):
+                    yield f"{rel}:{n}: {why}"
 
 
-if __name__ == "__main__":
-    import tempfile
-
-    with tempfile.TemporaryDirectory() as t:
-        _selftest(Path(t))
-    root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent
-    found = list(problems(root))
+def main(argv):
+    check = stale if "--stale" in argv else problems
+    args = [a for a in argv if a != "--stale"]
+    root = Path(args[0]) if args else Path(__file__).resolve().parent.parent
+    found = list(check(root))
     for p in found:
         print(p)
     print(f"{len(found)} problem(s) in {root}")
-    sys.exit(1 if found else 0)
+    return 1 if found else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

@@ -13,55 +13,56 @@ The skills explain the ideas well. Two things are weak:
    NewVegasCraft and Wither Storm × GTA V both did, kept the same port and mapping name, and can't run side by side.
    SkyCraft's family went the other way: Killcraft runs SkyCraft's jar unchanged plus an add-on.
 
-## Tier 1: fix what's wrong (all S, do first)
-- [ ] **Stop calling the template host-agnostic.** `HostLink.java` imports `MobWar` and `Nether`; deleting them
+## Tier 1: fix what's wrong (done 2026-10-15)
+- [x] **Stop calling the template host-agnostic.** `HostLink.java` imports `MobWar` and `Nether`; deleting them
   breaks the build. Give the exact strip list (MobWar, Nether, ProxyMixin, ProjectileMixin, ProxyTargetGoal,
   the GTA relay in HostLink) in `minecraft-bridge` and `mc-modder` §4.
-- [ ] **Fix broken references:** `host-adapters/references/` doesn't exist; the "World at War" note cited in
+- [x] **Fix broken references:** `host-adapters/references/` doesn't exist; the "World at War" note cited in
   `mc-merge` isn't in `knowledge/`; `mc_check.py`'s docstring names old paths;
   `engines/minecraft.md` points to a `minecraft-modding-mcp` that doesn't exist.
-- [ ] **Run and verify steps** in `minecraft-bridge` and `mc-merge`: `./gradlew runClient`, or build and copy the
+- [x] **Run and verify steps** in `minecraft-bridge` and `mc-merge`: `./gradlew runClient`, or build and copy the
   jar into a dedicated profile's `mods/`; where `latest.log` and `crash-reports/` are; GameTests and client game
   tests, with links to the four Fabric/NeoForge test notes in `knowledge/techniques/`.
-- [ ] **JDK check before any build.** 26.x needs a JDK 25; launcher-bundled runtimes are JREs and can't compile.
+- [x] **JDK check before any build.** 26.x needs a JDK 25; launcher-bundled runtimes are JREs and can't compile.
   Set `org.gradle.java.home` or a Gradle toolchain.
-- [ ] **Fix `/mc-new`:** use `$1`/`$2`, create the project outside the toolkit and `git init` it, rename mod id,
+- [x] **Fix `/mc-new`:** use `$1`/`$2`, create the project outside the toolkit and `git init` it, rename mod id,
   package, port and shared-memory name, apply the strip list, run `tools/mc_check.py` and `um publish check`,
   base `CONTRACT.md` on `knowledge/techniques/bridge-contracts-ownership-units-and-lifecycle.md`. Add
   `.claude/commands/mc-new.md` so it also loads in a clone.
-- [ ] **A "read first" list in `mc-modder`:** `engines/minecraft.md`, `fabric-mod-for-26-x-without-mappings`, the
+- [x] **A "read first" list in `mc-modder`:** `engines/minecraft.md`, `fabric-mod-for-26-x-without-mappings`, the
   GameTest/harness/modpack notes, the passthrough technique notes, the BeamNG and Portal 2 notes (both built on
   this template). Route recon, packaging and video to `game-recon`, `publish-mod`, `showcase-video`.
-- [ ] **Name the `um` tools in the loop:** `um backup create` with the `.minecraft`, Modrinth and Prism profile
+- [x] **Name the `um` tools in the loop:** `um backup create` with the `.minecraft`, Modrinth and Prism profile
   paths, `um publish check`, `um kb search/check/pr`.
-- [ ] **`tests/test_mc_check.py`:** self-test cases, the repo is clean, and every path the four skills and the
+- [x] **`tests/test_mc_check.py`:** self-test cases, the repo is clean, and every path the four skills and the
   command mention exists. This puts the layer under CI.
-- [ ] **Harden `mc_check`:** more text types (.ts .lua .ps1 .cmd), `raw.githubusercontent` and `codeload` URL forms,
+- [x] **Harden `mc_check`:** more text types (.ts .lua .ps1 .cmd), `raw.githubusercontent` and `codeload` URL forms,
   more binary types (.class .pak .esp .esm .esl .mca .pdb), the wrapper jar only under `gradle/wrapper/`.
 
-## Tier 2: make agents much better at Minecraft (S–M)
-- [ ] **minecraft-dev-mcp** ([MCDxAI/minecraft-dev-mcp](https://github.com/MCDxAI/minecraft-dev-mcp), MIT, 26.1+):
+## Tier 2: make agents much better at Minecraft (done 2026-10-15 except where noted)
+- [x] **minecraft-dev-mcp** ([MCDxAI/minecraft-dev-mcp](https://github.com/MCDxAI/minecraft-dev-mcp), MIT, 26.1+):
   add it to `mcp.json`; decompiled source, mixin and access-widener checks, version diffs. Tell `minecraft-bridge`
   and `port-a-mod` to check every mixin target with it. S
-- [ ] **GameTests + a client game test in the template's `mc/`** (Fabric's `configureTests`, `src/gametest`). The
+- [x] **GameTests + a client game test in the template's `mc/`** (Fabric's `configureTests`, `src/gametest`). The
   client test opens the void world, sends a fake `cam`, takes a screenshot and checks the shared-memory header,
   turning `fakehost.py`'s PNG into pass/fail. Require one GameTest per mechanic in `mc-merge`'s "Done means". M
-- [ ] **Pre-26 snippet check** in `um publish check` (or a hook): old `fabric-loom` id, a `mappings` line,
+- [x] **Pre-26 snippet check** in `um publish check` (or a hook): old `fabric-loom` id, a `mappings` line,
   `modImplementation`, `remapJar`, Java 21, Yarn names like `MinecraftClient`. The most common model mistake on 26.x. S
-- [ ] **CI that boots the shipped jar:** [headlesshq/mc-runtime-test](https://github.com/headlesshq/mc-runtime-test)
+- [ ] **CI that boots the shipped jar** (not yet: CI runs the dev-client GameTests; mc-runtime-test fights the
+  bridge's own auto-opened world, so it's documented in `mc-merge` for content mods only): [headlesshq/mc-runtime-test](https://github.com/headlesshq/mc-runtime-test)
   (MIT, 26.1–26.3) runs `/test runall` in a headless client and fails when no test ran. S
-- [ ] **Mixin rules** in `minecraft-bridge`: MixinExtras `@WrapOperation`/`@ModifyExpressionValue` over
+- [x] **Mixin rules** in `minecraft-bridge`: MixinExtras `@WrapOperation`/`@ModifyExpressionValue` over
   `@Redirect`/`@Overwrite`, `@Unique` with a modid prefix, `-Dmixin.debug.export=true` in the dev run. S
-- [ ] **Reuse [Jahrome907/minecraft-agent-skills](https://github.com/Jahrome907/minecraft-agent-skills)** (MIT,
+- [x] **Reuse [Jahrome907/minecraft-agent-skills](https://github.com/Jahrome907/minecraft-agent-skills)** (MIT,
   checked on 26.3) for generic testing, CI/release, resource packs and datagen instead of rewriting them; credit
   it. Start non-passthrough mods with Fabric's `fabric init` instead of the GTA template. M
-- [ ] **Version matrix** (Minecraft → Java → loader → Fabric API → Loom → Gradle), refreshed from Fabric Meta;
+- [x] **Version matrix** (Minecraft → Java → loader → Fabric API → Loom → Gradle), refreshed from Fabric Meta;
   recheck the template's Fabric API pin. M
-- [ ] **Minecraft recon** (`um mc scan`): launchers, profiles with game and loader versions, JREs vs JDKs, Loom
+- [x] **Minecraft recon** (`um mc scan`): launchers, profiles with game and loader versions, JREs vs JDKs, Loom
   cache. M
-- [ ] **Agent play-testing** with [denfry/mcpfabric](https://github.com/denfry/mcpfabric) in a dev-only profile
+- [x] **Agent play-testing** (documented in `mc-merge`, not wired in) with [denfry/mcpfabric](https://github.com/denfry/mcpfabric) in a dev-only profile
   (screenshots, commands, pathfinding). Operator-level by default: never ship it in a release. M
-- [ ] **host-adapters:** sections for BeamNG, Portal 2, Gothic II, Bannerlord; link the Elden Ring, Cyberpunk and
+- [x] **host-adapters:** sections for BeamNG, Portal 2, Gothic II, Bannerlord; link the Elden Ring, Cyberpunk and
   Fallout 4 host notes and the D3D12 readback note. M
 
 ## Tier 3: a real bridge kit (M–L)

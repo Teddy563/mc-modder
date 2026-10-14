@@ -4,3 +4,9 @@
 [mcp_servers.fal]
 url = "https://mcp.fal.ai/mcp"
 bearer_token_env_var = "FAL_KEY"
+
+# minecraft-dev-mcp (MIT): decompiled Minecraft source, mixin and access-widener checks, version diffs.
+# Needs Node 18+ and Java 17+; caches ~500 MB per Minecraft version.
+[mcp_servers.minecraft-dev]
+command = "npx"
+args = ["-y", "@mcdxai/minecraft-dev-mcp@1.3.0"]

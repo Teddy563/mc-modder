@@ -1,6 +1,6 @@
 ---
 name: host-adapters
-description: Per-host notes for putting Minecraft inside another game - GTA V, GTA IV, Skyrim, Fallout 4, Fallout New Vegas, Elden Ring, Cyberpunk 2077 - with the hook framework, units, axis mapping, anti-cheat line and the closest reviewed prior project for each. Use when starting or debugging the host-game half of a Minecraft passthrough mod.
+description: Per-host notes for putting Minecraft inside another game - GTA V, GTA IV, Skyrim, Fallout 4, Fallout New Vegas, Elden Ring, Cyberpunk 2077, BeamNG.drive, Portal 2, Gothic II, Bannerlord - with the hook framework, units, axis mapping, anti-cheat line and the closest reviewed prior project for each. Use when starting or debugging the host-game half of a Minecraft passthrough mod.
 ---
 
 # Host adapters
@@ -66,6 +66,40 @@ play-tested by Mineplus.
 - **Units:** metres, Z-up: start from the GTA V mapping and verify with a marker.
 - **Prior art:** none reviewed yet. Mineplus lists `minepunk-duocor3`, `cyberblock-rodthegod2` and
   `cybercraft-itzbloxy` as unreviewed: read them as leads, not as working references.
+
+## BeamNG.drive
+- **Hooks:** a BeamNG Lua extension (no native injection); Steve drawn as a `TSStatic` model, WebSocket bridge.
+  BeamNG has its own MCP server (`-enablemcp`) for driving the game from an agent.
+- **Line:** single-player; no anti-cheat. Keep BeamMP (third-party multiplayer) out of it.
+- **Field note:** `knowledge/games/beamng-drive/minecraft-inside-beamng-drive-passthrough-mod-websocket-brid.md`
+  (BeamNG 0.39.4, Minecraft 26.3 Fabric, status working).
+
+## Portal 2
+- **Hooks:** VScript plus a ReShade add-on (D3D9, 32-bit game); depth compositing with re-projection and camera
+  prediction, shared memory.
+- **Line:** VAC protects online co-op: launch with `-insecure`, put ReShade's `d3d9.dll` in the folder only for the
+  session and remove it after.
+- **Field note:** `knowledge/games/portal-2/portalcraft-minecraft-inside-portal-2.md` (build 10090, Minecraft 26.3,
+  Fabric API 0.161.0+26.3, JDK 25, status working).
+
+## Gothic II (Night of the Raven)
+- **Hooks:** a Union plugin (ZenGin) for camera, ground raycasts and console, WebSocket out; GD3D11 renderer, a
+  ReShade x86 add-on planned for compositing.
+- **Line:** single-player, no anti-cheat. Needs the community 2.6.0.0-rev2 executable.
+- **Field note:** `knowledge/games/gothic-ii/union-gd3d11-host-stack-minecraft-passthrough.md` (in progress).
+
+## Mount & Blade II: Bannerlord
+- **Hooks:** a C# Bannerlord module and a Fabric mod talking over a local bridge, with session isolation and damage
+  de-duplication.
+- **Line:** single-player custom battles only.
+- **Field note:** `knowledge/games/mount-and-blade-ii-bannerlord/bannercraft-minecraft-gameplay-bridge.md`
+  (v1.4.8, Minecraft 26.3, in progress).
+
+## Host notes worth reading first
+- Elden Ring: `knowledge/games/elden-ring/` (me3, native Rust DLLs, offline rules).
+- Cyberpunk 2077: `knowledge/games/cyberpunk-2077/cyberpunk-2077-native-modding-address-hashes.md`.
+- Fallout 4: `knowledge/games/fallout-4/fallout-4.md`.
+- Any D3D12 host: `knowledge/techniques/d3d12-frame-readback-buffers-only.md`.
 
 ## A host that isn't here
 1. Check the Mineplus list and `skills/mashup-mods/references/mashup-cases.md`.

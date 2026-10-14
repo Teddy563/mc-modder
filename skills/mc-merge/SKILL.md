@@ -14,7 +14,11 @@ A weapon, mob, vehicle or block from another game, rebuilt as Minecraft content.
 - Assets: never copy the guest's files into the mod. Either a converter that runs on the user's own install
   and writes a private resource pack, or new lookalike art.
 - The mod must still load with placeholder assets when the converted pack is missing.
-- Prior art: the Halo 3 Warthog and World at War ports in `knowledge/` (`um kb search halo`).
+- Write the content's JSON (recipes, loot tables, models, block states, tags, language) with Fabric's datagen, not
+  by hand: datagen gets the folder names and JSON shapes right for the target version.
+- Prior art: Halo 3 weapons, vehicles and maps in Minecraft
+  (`knowledge/games/halo-3-mcc/halo-3-weapons-covenant-vehicles-and-maps-ported-into-minecr.md`); search for more
+  with `um kb search minecraft`.
 
 ## 2. Headless rules inside Minecraft
 For guests whose gameplay is numbers (tower defense, cards, puzzles, top-down 2D):
@@ -30,8 +34,12 @@ For guests whose gameplay is numbers (tower defense, cards, puzzles, top-down 2D
 ## 3. Merge with another mod or modpack
 - Pin exact versions of Minecraft, the loader and every mod in `MODLOG.md`.
 - Integrate through the other mod's API or data (tags, recipes, data packs) before mixins into its code.
-- If it's a Forge/NeoForge mod and you're on Fabric (or the reverse), port, don't wrap: the `port-a-mod` skill covers this, including a Forge 1.7.10 → Fabric 1.20.1 mapping table.
-- Test inside the full pack headless (a dedicated server with every mod) before a client run.
+- If it's a Forge/NeoForge mod and you're on Fabric (or the reverse), port, don't wrap: the `port-a-mod` skill
+  covers this, including a Forge 1.7.10 → Fabric 1.20.1 mapping table. Use the `minecraft-dev` MCP server's version
+  diff to see what changed between the two Minecraft versions.
+- Test inside the full pack headless (a dedicated server with every mod) before a client run:
+  `knowledge/techniques/testing-a-fabric-mod-inside-a-large-modpack-headless.md`;
+  `knowledge/games/minecraft/neoforge-26-2-modpack-audit-perf-mods.md` for a real pack audit.
 - Ship only your mod and a list of the others with their official links. Never repack other people's jars.
 
 ## 4. World conversion (real world into Minecraft)
@@ -41,11 +49,33 @@ The RealWorldMC and Arnis direction: map data, elevation or photogrammetry turne
 - 1 block = 1 metre unless the user picks another scale; record it.
 - Prior art: RealWorldMC (github.com/Teddy563/realworldmc, Google 3D Tiles and Street View in a Fabric mod) and Arnis (github.com/louis-e/arnis, OpenStreetMap to Minecraft world).
 
-## Building a 26.x Fabric mod
-Minecraft 26.x ships without obfuscation: Loom's non-remapping plugin `net.fabricmc.fabric-loom`, no
-`mappings` line, Mojang's class names, JDK 25. Use Fabric's example mod for the target version as the start.
+## Starting and building a mod
+- Start from Fabric's own starting point for the target version, not from the GTA passthrough template: clone
+  `https://github.com/FabricMC/fabric-example-mod` at the branch named after the version (e.g. `26.2`), or use the
+  web generator at https://fabricmc.net/develop/template/ (it can add datagen).
+- Minecraft 26.x ships without obfuscation: Loom's non-remapping plugin `net.fabricmc.fabric-loom`, no `mappings`
+  line, `implementation` and `jar` instead of `modImplementation` and `remapJar`, Mojang's class names, JDK 25
+  (`um mc scan` shows which Java on the machine is a JDK). `python tools/mc_check.py --stale <project>` catches the
+  pre-26 forms models tend to write.
+- Look up every class, method and mixin target with the `minecraft-dev` MCP server before using it; never guess
+  a name from memory of another version.
+- Run: `./gradlew runClient` (dev client, logs in `run/logs/latest.log`), `./gradlew build` for the jar. Install
+  the jar only into a dedicated profile.
+- Versions: `docs/VERSIONS.md` has the Minecraft → Java → Fabric Loader → Fabric API → Loom table and how to
+  refresh it.
+
+## Testing
+- One server GameTest per ported mechanic (Fabric's test API, `src/gametest/`): the guest's numbers from
+  `MODLOG.md` as assertions. See `knowledge/techniques/fabric-1-20-1-gametests-as-the-oracle-of-a-large-mod-port.md`.
+- A client game test with a screenshot for anything visual (models, textures: a missing texture shows as purple).
+- In CI, boot the built jar, not just the dev run:
+  [headlesshq/mc-runtime-test](https://github.com/headlesshq/mc-runtime-test) (MIT) starts a real client from the
+  jar and runs the GameTests.
+- Agent play-testing: [denfry/mcpfabric](https://github.com/denfry/mcpfabric) (MIT) gives an agent screenshots,
+  commands and movement inside a running client over MCP. It has operator-level control: dev profile only, bound to
+  localhost with its token, never shipped in a release or a modpack.
 
 ## Done means
 - It loads in a clean profile with only its declared dependencies.
-- The guest's numbers in `MODLOG.md` match what the mod does (a test or a recorded measurement).
-- No guest or Minecraft assets in the repo; credits for every source.
+- Every ported mechanic has a GameTest that asserts the guest's numbers from `MODLOG.md`, and the tests pass.
+- No guest or Minecraft assets in the repo (`python tools/mc_check.py <project>`); credits for every source.

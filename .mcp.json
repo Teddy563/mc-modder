@@ -6,6 +6,14 @@
       "headers": {
         "Authorization": "Bearer ${FAL_KEY}"
       }
+    },
+    "minecraft-dev": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mcdxai/minecraft-dev-mcp@1.3.0"
+      ]
     }
   }
 }

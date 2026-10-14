@@ -18,7 +18,10 @@
   Data (recipes, loot tables, tags) goes under `data/<modid>/`.
 - **Server-side only:** plugins (Paper/Spigot) plus resource packs change a lot without client mods. The
   "Black Ops 2 inside vanilla Minecraft" demo was a plugin plus a resource pack.
-- `minecraft-modding-mcp` gives an agent mappings, decompiled source and version diffs.
+- The `minecraft-dev` MCP server ([MCDxAI/minecraft-dev-mcp](https://github.com/MCDxAI/minecraft-dev-mcp), MIT,
+  in this repo's MCP config) gives an agent decompiled source, mappings, mixin and access-widener checks and
+  version diffs. [weikengchen/mcdev-mcp](https://github.com/weikengchen/mcdev-mcp) is an alternative with call graphs.
+- Minecraft crossovers (Minecraft inside another game, ports into Minecraft): start with the `mc-modder` skill.
 
 ## Porting an old Forge mod (1.7.10 / 1.12) to modern Fabric
 - Use the **port-a-mod** skill. It covers the original's license (which decides whether the port can be

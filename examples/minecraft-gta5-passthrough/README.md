@@ -188,6 +188,11 @@ Your off hand holds explosive fireworks for the crossbow, and you get 64 arrows.
 
 ## Tests without GTA
 
+- **GameTests** (`mc/src/gametest/`): `./gradlew build` runs the server GameTests (ground columns become barriers,
+  `clear` removes them); `./gradlew runClientGameTest` starts a client, connects to the link like a host would,
+  checks the hello, the camera and ground messages, takes screenshots and, on Windows, checks the shared-memory
+  header. CI: `.github/workflows/mc-template.yml` at the repo root.
+
 - **`host/fakehost.py`** runs with Windows Python while Minecraft runs:
   `python host\fakehost.py [seconds] [outdir] [fp|tp]`. It flies Minecraft's camera round a few test blocks
   and gives it a flat ground. It then composites the exported frames over a synthetic scene rendered for the

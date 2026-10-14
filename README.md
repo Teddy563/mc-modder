@@ -10,7 +10,8 @@ Real Minecraft inside other games, other games inside Minecraft, and Minecraft m
 MC Modder is a fork of [universal-modder](https://github.com/rehan-remade/universal-modder) by Rehan
 and contributors. Everything upstream is still here: every skill, the `um` CLI, the fal MCP setup, the
 examples and the knowledge base. On top of it sits a Minecraft layer: four skills, a slash command and a
-guard, built from the projects listed on [mineplus.net](https://mineplus.net).
+guard, a Minecraft recon command and a Minecraft MCP server, built from the projects listed on
+[mineplus.net](https://mineplus.net). What's next: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## The Minecraft layer
 
@@ -21,7 +22,10 @@ guard, built from the projects listed on [mineplus.net](https://mineplus.net).
 | [`skills/host-adapters`](skills/host-adapters/SKILL.md) | GTA V, GTA IV, Skyrim, Fallout 4, New Vegas, Elden Ring, Cyberpunk 2077: hooks, units, prior projects. |
 | [`skills/mc-merge`](skills/mc-merge/SKILL.md) | Ports into Minecraft, headless rule sims, merging with other mods, real-world worlds. |
 | [`commands/mc-new.md`](commands/mc-new.md) | `/mc-new <host>` scaffolds a project with `MODLOG.md` and `docs/CONTRACT.md`. |
-| [`tools/mc_check.py`](tools/mc_check.py) | Fails on links to known malware lures and on game files or builds in a repo. |
+| [`tools/mc_check.py`](tools/mc_check.py) | Fails on links to known malware lures and on game files or builds in a repo; `--stale` flags pre-26 code (old Loom, mappings, Yarn names). |
+| `um mc scan` | Minecraft recon: every Java on the machine and whether it's a JDK, launchers and profiles with game and loader versions, Loom caches. |
+| `minecraft-dev` MCP server | Decompiled Minecraft source, mixin and access-widener checks, version diffs ([MCDxAI/minecraft-dev-mcp](https://github.com/MCDxAI/minecraft-dev-mcp), MIT), set up in every agent's MCP config. |
+| [`docs/VERSIONS.md`](docs/VERSIONS.md) | Minecraft → Java → Fabric Loader → Fabric API → Loom, with how to refresh it. |
 
 The end-to-end template is upstream's
 [`examples/minecraft-gta5-passthrough`](examples/minecraft-gta5-passthrough): Minecraft 26.3 (Fabric) next to

@@ -11,6 +11,7 @@ Subcommands (see `um --help`):
   backup    snapshot and restore save folders before you touch them
   publish   lint a mod folder before sharing: game files, decompiled code, secrets, credits
   kb        the knowledge base: search prior field notes, write your own, check it, open a PR
+  mc        Minecraft recon: Java runtimes (JDK vs JRE), launchers and instances, Loom caches
 """
 
 __version__ = "0.2.0"

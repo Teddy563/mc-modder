@@ -53,6 +53,7 @@ const GROUPS = [
   { name: "backup", blurb: "snapshot and restore a game's save files before a modded launch" },
   { name: "publish", blurb: "pre-release lint for a mod: no game files, no decompiled code, no leaked keys" },
   { name: "kb", blurb: "search, scaffold, check and index the field-note knowledge base (search / new / check / index)" },
+  { name: "mc", blurb: "Minecraft recon: Java runtimes (JDK vs JRE), launchers and instances, Loom caches (scan)" },
 ]
 
 const GROUP_NAMES = new Set(GROUPS.map((group) => group.name))
