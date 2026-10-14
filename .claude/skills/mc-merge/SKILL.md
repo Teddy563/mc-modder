@@ -35,11 +35,11 @@ For guests whose gameplay is numbers (tower defense, cards, puzzles, top-down 2D
 - Ship only your mod and a list of the others with their official links. Never repack other people's jars.
 
 ## 4. World conversion (real world into Minecraft)
-The RealWorldMC and Meld direction: map data, elevation or photogrammetry turned into a world.
+The RealWorldMC and Arnis direction: map data, elevation or photogrammetry turned into a world.
 - Keep the converter separate from the data. Check each data source's licence (OpenStreetMap is ODbL and
   needs attribution) and write it into the world's README.
 - 1 block = 1 metre unless the user picks another scale; record it.
-- Prior art: RealWorldMC (realworldmc.com), the pinned project on Mineplus.
+- Prior art: RealWorldMC (github.com/Teddy563/realworldmc, Google 3D Tiles and Street View in a Fabric mod) and Arnis (github.com/louis-e/arnis, OpenStreetMap to Minecraft world).
 
 ## Building a 26.x Fabric mod
 Minecraft 26.x ships without obfuscation: Loom's non-remapping plugin `net.fabricmc.fabric-loom`, no

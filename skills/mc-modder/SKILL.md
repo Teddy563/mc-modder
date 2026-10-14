@@ -19,7 +19,7 @@ Ask the user if it isn't clear. Each direction has its own skill.
 | **Minecraft into a host** | real Minecraft Java runs next to the host game; the host draws it, sends camera and collision back | `minecraft-bridge` + `host-adapters` |
 | **A game into Minecraft** | the guest's content, mechanics or rules rebuilt as a Fabric mod; the guest never runs | `mc-merge` |
 | **Merge with a mod or concept** | Minecraft plus another Fabric/Forge mod, a modpack, or an idea (a boss, a vehicle, a game mode) | `mc-merge` |
-| **Real world into Minecraft** | map data or photogrammetry converted into a world (the RealWorldMC and Meld angle) | `mc-merge`, section "World conversion" |
+| **Real world into Minecraft** | map data or photogrammetry converted into a world (the RealWorldMC and Arnis angle) | `mc-merge`, section "World conversion" |
 
 Pick the lightest route that delivers the idea. Running two games at once for one mechanic is the most
 common mistake: if the user only wants the guest's look or one rule, port it instead.
