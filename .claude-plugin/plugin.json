@@ -1,14 +1,18 @@
 {
-  "name": "universal-modder",
-  "description": "Mod almost any game you own with an AI agent: engine recon, reverse engineering, fal-generated art/3D/audio, in-game testing, showcase videos, and a shared knowledge base of how games were modded.",
+  "name": "mineplus-modder",
+  "description": "Minecraft crossover mods with an AI agent: real Minecraft inside other games, other games inside Minecraft, and Minecraft merged with other mods. A fork of universal-modder with every one of its skills, the fal MCP and its knowledge base.",
   "author": {
-    "name": "Rehan",
-    "url": "https://github.com/rehan-remade"
+    "name": "Mineplus",
+    "url": "https://mineplus.net"
   },
-  "homepage": "https://github.com/rehan-remade/universal-modder",
-  "repository": "https://github.com/rehan-remade/universal-modder",
+  "homepage": "https://mineplus.net/modder/",
+  "repository": "https://github.com/Teddy563/mineplus-modder",
   "license": "MIT",
   "keywords": [
+    "minecraft",
+    "fabric",
+    "passthrough",
+    "mashup",
     "game-modding",
     "modding",
     "reverse-engineering",
