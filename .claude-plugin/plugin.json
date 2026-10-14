@@ -1,12 +1,12 @@
 {
-  "name": "mineplus-modder",
+  "name": "mc-modder",
   "description": "Minecraft crossover mods with an AI agent: real Minecraft inside other games, other games inside Minecraft, and Minecraft merged with other mods. A fork of universal-modder with every one of its skills, the fal MCP and its knowledge base.",
   "author": {
-    "name": "Mineplus",
-    "url": "https://mineplus.net"
+    "name": "Teddy563",
+    "url": "https://github.com/Teddy563"
   },
   "homepage": "https://mineplus.net/modder/",
-  "repository": "https://github.com/Teddy563/mineplus-modder",
+  "repository": "https://github.com/Teddy563/mc-modder",
   "license": "MIT",
   "keywords": [
     "minecraft",

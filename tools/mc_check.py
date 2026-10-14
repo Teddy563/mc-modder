@@ -1,7 +1,7 @@
 """Fails if the toolkit links (github.com/<repo>) a known malware lure or ships a binary it shouldn't.
 
     python tools/check.py            # checks the modder/ folder this file lives in
-    python tools/check.py <folder>   # checks a project made with /mineplus-new
+    python tools/check.py <folder>   # checks a project made with /mc-new
 """
 import sys
 from pathlib import Path

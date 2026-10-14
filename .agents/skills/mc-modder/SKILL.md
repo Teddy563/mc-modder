@@ -1,11 +1,11 @@
 ---
-name: mineplus-modder
+name: mc-modder
 description: Build Minecraft crossover mods with an AI agent - real Minecraft running inside another PC game (passthrough), another game's content or rules inside Minecraft, or Minecraft merged with another mod or concept. Use when the user wants Minecraft in Skyrim, GTA V, Elden Ring, Cyberpunk 2077, Fallout or any other host, wants a game ported into Minecraft, or wants to combine Minecraft with another mod. Start here; it routes to minecraft-bridge, host-adapters and mc-merge.
 ---
 
-# Mineplus Modder
+# MC Modder
 
-Mineplus Modder is a fork of
+MC Modder is a fork of
 [Universal Modder](https://github.com/rehan-remade/universal-modder) (MIT, by Rehan and contributors).
 This fork keeps every Universal Modder skill and adds a Minecraft-first layer on top. For work that leaves
 Minecraft (another engine, fal assets, video), use `mod-any-game`, `fal-assets` and `showcase-video` from this
@@ -55,7 +55,7 @@ common mistake: if the user only wants the guest's look or one rule, port it ins
   Frame compositing + state over a 127.0.0.1 WebSocket and named shared memory. Universal Modder's worked example; its field note is
   `knowledge/games/gta-v/minecraft-passthrough.md`. Start any new host from its `mc/` folder: the Fabric half is host-agnostic apart from the GTA-specific gameplay classes (`MobWar`, `Nether`, parts of
   `WorldBridge`).
-- `/mineplus-new <host>` copies the template into a new project folder and writes the first `MODLOG.md`
+- `/mc-new <host>` copies the template into a new project folder and writes the first `MODLOG.md`
   and `docs/CONTRACT.md` for that host.
 
 ## 5. Safety

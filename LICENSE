@@ -22,9 +22,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
-Mineplus Modder additions (skills/mineplus-modder, skills/minecraft-bridge, skills/host-adapters,
-skills/mc-merge, commands/, tools/mineplus_check.py, README.md):
+MC Modder additions (skills/mc-modder, skills/minecraft-bridge, skills/host-adapters,
+skills/mc-merge, commands/, tools/mc_check.py, README.md):
 
-Copyright (c) 2026 Mineplus (mineplus.net)
+Copyright (c) 2026 Teddy563
 
 Released under the same MIT License terms as above.

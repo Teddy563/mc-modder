@@ -1,14 +1,14 @@
 {
   "$schema": "https://code.claude.com/schemas/marketplace.json",
-  "name": "mineplus-modder",
+  "name": "mc-modder",
   "description": "Skills, templates and a knowledge base for Minecraft crossover mods, forked from universal-modder.",
   "owner": {
-    "name": "Mineplus",
-    "url": "https://mineplus.net"
+    "name": "Teddy563",
+    "url": "https://github.com/Teddy563"
   },
   "plugins": [
     {
-      "name": "mineplus-modder",
+      "name": "mc-modder",
       "source": "./",
       "description": "Minecraft crossover mods with an AI agent: passthrough into other games, ports into Minecraft, merges with other mods."
     }

@@ -1,11 +1,11 @@
 ---
-description: Start a new Minecraft crossover project from the Mineplus Modder template
+description: Start a new Minecraft crossover project from the MC Modder template
 argument-hint: <host game> [project folder]
 ---
 
-Start a Mineplus Modder project for putting Minecraft into **$ARGUMENTS**.
+Start a MC Modder project for putting Minecraft into **$ARGUMENTS**.
 
-1. Load the `mineplus-modder` skill and follow it. Read `host-adapters` for this host. If the host isn't
+1. Load the `mc-modder` skill and follow it. Read `host-adapters` for this host. If the host isn't
    listed, say so and do the recon from that skill's last section.
 2. Ask the user for anything you can't find: the host's exact build and store, which edition, the
    Minecraft version they want, and what they want from the crossover (real Minecraft running, or only its

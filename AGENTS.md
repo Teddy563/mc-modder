@@ -4,11 +4,11 @@ A game-modding toolkit and a shared knowledge base for AI coding agents: Claude 
 CLI, GitHub Copilot, OpenCode and anything else that reads `AGENTS.md`. When someone opens an agent in this
 repo, they almost always want to **mod a game**, or to learn how a game was modded.
 
-## Mineplus Modder
-This is Mineplus Modder, a fork of universal-modder focused on Minecraft crossovers. If the request involves
+## MC Modder
+This is MC Modder, a fork of universal-modder focused on Minecraft crossovers. If the request involves
 Minecraft (Minecraft inside another game, a game inside Minecraft, or Minecraft merged with another mod),
-read `skills/mineplus-modder/SKILL.md` first; it routes to `minecraft-bridge`, `host-adapters` and `mc-merge`
-and adds the Mineplus safety rules. Everything below still applies.
+read `skills/mc-modder/SKILL.md` first; it routes to `minecraft-bridge`, `host-adapters` and `mc-merge`
+and adds its own safety rules. Everything below still applies.
 
 ## Start here
 1. **Read `skills/mod-any-game/SKILL.md` and follow its loop:** intake → recon → route → lab (backups) →

@@ -1,6 +1,6 @@
 # Safety rules
 
-Adds the Mineplus rules to `skills/mod-any-game/references/safety.md`. Read both.
+Adds the MC Modder rules to `skills/mod-any-game/references/safety.md`. Read both.
 None of this is legal advice.
 
 ## Online games and anti-cheat
@@ -25,10 +25,10 @@ None of this is legal advice.
 - Loaders (ScriptHookV, SKSE, F4SE, xNVSE, RED4ext, me3, ReShade) are fetched from their own sites by
   install scripts, never bundled.
 
-## Mineplus rules
+## MC Modder rules
 - **Never link, fork or recommend these repos.** They are suspected malware lures dressed up as mashup
   tools: `TerminusBoulder/Universal-Game-Mashup-Studio`, `TileTrackWarehouse/Passthrough-Mod-Forge`,
-  `StuccoWhisper/Extreme-Injector-V4`. `tools/mineplus_check.py` fails if any of them appears in the toolkit.
+  `StuccoWhisper/Extreme-Injector-V4`. `tools/mc_check.py` fails if any of them appears in the toolkit.
 - A viral mod's "download" is often malware. Only run loaders and mods from their official repositories
   and releases, and read install scripts before running them.
 - Never re-host other people's mod builds or videos. Link to the creator's own release or post.
